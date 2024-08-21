@@ -50,6 +50,7 @@ export default function Signup() {
   };
   const handleSubmit = () => {
     console.log(registerDetails);
+    
   };
 
   return (
