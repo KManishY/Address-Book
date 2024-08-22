@@ -14,26 +14,18 @@ import {
   InputRightElement
 } from "@chakra-ui/react";
 import { FaUserAlt, FaLock } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useNavigate,Link} from "react-router-dom";
+import axios from "axios";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
-  
+  const navigate = useNavigate();
   const handleShowClick = () => setShowPassword(!showPassword);
 
-  // console.log("state: ", status);
 
-  const initialState = {
-    name: "",
-    email: "",
-    password: "",
-    username: "",
-    mobile: ""
-  };
   const [registerDetails, setRegisterDetails] = useState({
     name: "",
     email: "",
@@ -48,9 +40,21 @@ export default function Signup() {
       [e.target.name]: e.target.value
     });
   };
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log(registerDetails);
-    
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/signup",
+        registerDetails
+      );
+      console.log(response)
+      if (response.data.key === "successfully signed up") navigate("/");
+    } catch (error) {
+      console.error(
+        "Error during signup:",
+        error.response ? error.response.data : error.message
+      );
+    }
   };
 
   return (
@@ -76,7 +80,6 @@ export default function Signup() {
           <form style={{ backgroundColor: "white" }}>
             <Stack spacing={4} p="1rem" boxShadow="md">
               {" "}
-              // backgroundColor='whiteAlpha.900'
               {/* ---------Name---------  */}
               <FormControl>
                 <InputGroup>
@@ -174,7 +177,7 @@ export default function Signup() {
               >
                 Sign Up
               </Button>
-            <Link to ={'/'}>already registered...? login</Link>
+              <Link to={"/"}>already registered...? login</Link>
             </Stack>
           </form>
         </Box>

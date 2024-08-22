@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 import {
   Flex,
   Heading,
@@ -15,35 +16,62 @@ import {
   InputRightElement
 } from "@chakra-ui/react";
 import { FaUserAlt, FaLock } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  const [login,setLogin] = useState(true);
+  const [otpStatus, setOtpStatus] = useState(false);
   const handleShowClick = () => setShowPassword(!showPassword);
-  // const navigate = useNavigate()
 
-  const initialState = { username: "", password: "" };
+  const initialState = { email: "", password: "", userOtp:'' };
   const [loginDetails, setLoginDetails] = useState(initialState);
-
+  const navigate = useNavigate();
   const handleChange = (e) => {
     setLoginDetails({
       ...loginDetails,
       [e.target.name]: e.target.value
     });
   };
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (loginDetails) {
+      if(!otpStatus){
+        loginDetails.type='a'
+      }else{
+        loginDetails.type='b'
+      }
       console.log("loginDetails: ", loginDetails);
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/login",
+          loginDetails
+        );
+        if(response.data.status && !otpStatus){
+           alert('Enter otp sent to your email for login');
+           setOtpStatus(true);
+           return;
+        }else if(response.data.status && otpStatus){
+          localStorage.setItem("authToken", response.data.token); // Save token with key 'authToken'
+          localStorage.setItem("name", response.data.name); // Save token with key 'authToken'
+          console.log("Token saved to localStorage:", response.data.token);
+          navigate("/logbook");
+        }else{
+          alert(response.data.message);
+        }
+        
+
+       
+      } catch (error) {
+        console.error(
+          "Error during login:",
+          error.response ? error.response.data : error.message
+        );
+      }
     }
   };
-  const handleSignupClick =()=>{
-    setLogin(true)
-    console.log(login)
-  }
+ 
 
   return (
     <Flex
@@ -67,8 +95,7 @@ function Login() {
         <Box minW={{ base: "90%", md: "468px" }}>
           <form>
             <Stack spacing={4} p="1rem" boxShadow="md">
-              {" "}
-              // backgroundColor='#E2DFD2'
+              
               <FormControl>
                 <InputGroup>
                   <InputLeftElement
@@ -76,9 +103,10 @@ function Login() {
                     children={<CFaUserAlt color="gray.300" />}
                   />
                   <Input
+                    isReadOnly={otpStatus}
                     type="text"
-                    placeholder="UserName"
-                    name="username"
+                    placeholder="email"
+                    name="email"
                     onChange={(e) => handleChange(e)}
                   />
                 </InputGroup>
@@ -91,6 +119,7 @@ function Login() {
                     children={<CFaLock color="gray.300" />}
                   />
                   <Input
+                    isReadOnly={otpStatus}
                     type={showPassword ? "text" : "password"}
                     placeholder="Password"
                     name="password"
@@ -112,6 +141,21 @@ function Login() {
                 </InputGroup>
                 <FormHelperText textAlign="right"></FormHelperText>
               </FormControl>
+              {otpStatus && <FormControl>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<CFaUserAlt color="gray.300" />}
+                  />
+                  <Input
+                    type="text"
+                    placeholder="OTP"
+                    name="userOtp"
+                    onChange={(e) => handleChange(e)}
+                  />
+                </InputGroup>
+              </FormControl>}
+              
               <Button
                 borderRadius={0}
                 variant="solid"
@@ -119,9 +163,9 @@ function Login() {
                 width="full"
                 onClick={handleSubmit}
               >
-                Login
+                {otpStatus ? "Submit OTP" : "Login"}
               </Button>
-              <Link to={'./Signup'}>new user? Signup</Link>
+              <Link to={"./Signup"}>new user? Signup</Link>
             </Stack>
           </form>
         </Box>
@@ -130,4 +174,4 @@ function Login() {
   );
 }
 //  "@material-ui/core": "^4.12.4",
-export default Login
+export default Login;

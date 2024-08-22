@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
 const addressBookSchema = new mongoose.Schema({
-  fullname: String,
+  name: String,
   email: String,
   dob: String,
-  number: Number,
+  mobile: Number,
   website: String,
   group: String
 });

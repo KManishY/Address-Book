@@ -11,6 +11,7 @@ const jwt = require("jsonwebtoken");
 const { UserModel } = require("./Models/User.model.js");
 const { json } = require("express");
 const { authentication } = require("./middleware/authentication.js");
+const {sendEmail}  = require("./helper/helper")
 
 app.use(express.json());
 app.get("/", function (req, res) {
@@ -33,20 +34,30 @@ app.post("/signup", async (req, res) => {
     });
 });
 app.post("/login", async (req, res) => {
-  let { email, password } = req.body;
+  let { email, password, type, userOtp } = req.body;
+  console.log(req.body)
   let user = await UserModel.findOne({ email });
+  if(!user){
+    return res.send({status: false,message: "Login failed"});
+  }
   console.log("user: ", user);
+  const otp = Math.floor(Math.random() * 100000) + 100000;
   let hash = user.password;
   console.log("hash: ", hash);
-  bcrypt.compare(password, hash, (err, result) => {
-    if (result) {
-      // console.log('result: ', result);
-      var token = jwt.sign({ email: email }, "secret");
-      res.send({ msg: "Login successful", token: token });
-    } else {
-      res.send("Login failed");
+  if(type == 'a'){
+    const result = await bcrypt.compare(password, hash);
+    const sentmail = await sendEmail(otp,email,user.name);
+    if(sentmail.status){
+      await UserModel.findByIdAndUpdate(user.id,{OTP: otp});
+       return res.send({status: true, message: "otp send successfully"})
+    }else{
+      return res.send({status: false, message: "something went wrong"})
     }
-  });
+  }else if(user.OTP !=userOtp){
+   return res.send({status: false, message: "otp not matched"});
+  }
+  var token = jwt.sign({ email: email }, "secret");
+  res.send({ status: true, message: "Login successful", token: token, name: user.name });
 });
 
 app.use("/dashboard",authentication, dashboardController);

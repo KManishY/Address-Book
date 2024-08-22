@@ -18,12 +18,12 @@ dashboardController.get("/", async (req, res) => {
 
 dashboardController.post("/create", async (req, res) => {
   try {
-    const { fullname, email, dob, number, website, group } = req.body;
+    const { name, email, dob, mobile, website, group } = req.body;
     const newUser = new AddressBook({
-      fullname,
+      name,
       email,
       dob,
-      number,
+      mobile,
       website,
       group
     });
@@ -36,7 +36,7 @@ dashboardController.post("/create", async (req, res) => {
 });
 
 
-dashboardController.patch('/update/:id', async (req, res) => {
+dashboardController.put('/update/:id', async (req, res) => {
   console.log(req.body,req.params)
 	try {
 		const {id} = req.params;
