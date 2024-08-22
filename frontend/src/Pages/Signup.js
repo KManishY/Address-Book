@@ -44,11 +44,14 @@ export default function Signup() {
     console.log(registerDetails);
     try {
       const response = await axios.post(
-        "http://localhost:8000/signup",
+        "https://address-book-cumk.onrender.com/signup",
         registerDetails
       );
       console.log(response)
-      if (response.data.key === "successfully signed up") navigate("/");
+      if(response.data.status){
+        navigate("/login");
+      }
+      else alert(response.data.message)
     } catch (error) {
       console.error(
         "Error during signup:",
@@ -68,7 +71,6 @@ export default function Signup() {
     >
       {" "}
       <Stack
-        border="2px solid #070b34"
         flexDir="column"
         mb="2"
         justifyContent="center"

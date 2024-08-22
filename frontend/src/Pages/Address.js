@@ -45,7 +45,7 @@ const Address = () => {
         throw new Error("No token found in local storage");
       }
 
-      const response = await axios.get("http://localhost:8000/dashboard", {
+      const response = await axios.get("https://address-book-cumk.onrender.com/dashboard", {
         headers: {
           Authorization: token
         }
@@ -70,7 +70,7 @@ const Address = () => {
         throw new Error("No token found in local storage");
       }
 
-      await axios.delete(`http://localhost:8000/dashboard/delete/${id}`, {
+      await axios.delete(`https://address-book-cumk.onrender.com/dashboard/delete/${id}`, {
         headers: {
           Authorization: token
         }

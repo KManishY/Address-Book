@@ -58,7 +58,7 @@ export default function UserDetailForm({ existingContact,setSelectedContact,fetc
       if (existingContact) {
         // Edit mode: update existing contact
         const response = await axios.put(
-          `http://localhost:8000/dashboard/update/${existingContact._id}`,
+          `https://address-book-cumk.onrender.com/dashboard/update/${existingContact._id}`,
           contactDetail,
           {
             headers: {
@@ -71,7 +71,7 @@ export default function UserDetailForm({ existingContact,setSelectedContact,fetc
       } else {
         // Add mode: create new contact
         const response = await axios.post(
-          "http://localhost:8000/dashboard/create",
+          "https://address-book-cumk.onrender.com/dashboard/create",
           contactDetail,
           {
             headers: {

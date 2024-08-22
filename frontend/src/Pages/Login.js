@@ -45,7 +45,7 @@ function Login() {
       console.log("loginDetails: ", loginDetails);
       try {
         const response = await axios.post(
-          "http://localhost:8000/login",
+          "https://address-book-cumk.onrender.com/login",
           loginDetails
         );
         if(response.data.status && !otpStatus){
@@ -83,7 +83,6 @@ function Login() {
       mt="-110px"
     >
       <Stack
-        border="2px solid #070b34"
         flexDir="column"
         mb="2"
         justifyContent="center"
@@ -165,7 +164,7 @@ function Login() {
               >
                 {otpStatus ? "Submit OTP" : "Login"}
               </Button>
-              <Link to={"./Signup"}>new user? Signup</Link>
+              <Link to={"/Signup"}>new user? Signup</Link>
             </Stack>
           </form>
         </Box>

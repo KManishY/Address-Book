@@ -20,17 +20,20 @@ app.get("/", function (req, res) {
 
 app.post("/signup", async (req, res) => {
   let { name, email, password, username, mobile } = req.body;
-
+  let user = await UserModel.findOne({ email });
+  if(user){
+    return res.send({status: false,message: "Email allready present."});
+  }
   console.log(req.body);
   bcrypt
     .hash(password, 6)
     .then(async (hash) => {
       const user = new UserModel({ name, email, password: hash, username,mobile });
       await user.save();
-      res.send({ key: "successfully signed up" });
+      res.send({status: true, message: "successfully signed up" });
     })
     .catch((err) => {
-      res.send({ name: err });
+      res.send({status: false, name: err,message:"somthing went wrong" });
     });
 });
 app.post("/login", async (req, res) => {
