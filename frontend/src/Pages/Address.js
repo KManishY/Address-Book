@@ -20,6 +20,7 @@ import {
 import axios from "axios";
 import Sidebar from "../component/Sidebar";
 import UserDetailForm from "../component/UserDetailForm";
+import { useNavigate } from "react-router-dom";
 
 const Address = () => {
   const [data, setData] = useState([]); // Initialize as an empty array
@@ -27,7 +28,11 @@ const Address = () => {
   const [selectedContact, setSelectedContact] = useState(null);
   const [isOpen, setOpenModal] = useState(false);
   const onClose = () => setOpenModal(false);
-
+  const token = localStorage.getItem("authToken");
+  const navigate = useNavigate();
+  if (!token) {
+    navigate('/login');
+  }
   const handleEdit = (item) => {
     console.log("Editing item:", item);
     setSelectedContact(item);
