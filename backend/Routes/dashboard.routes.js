@@ -30,12 +30,14 @@ dashboardController.post("/create", async (req, res) => {
     await newUser.save();
     res.status(200).json("New User Added");
   } catch (error) {
+    console.log('error: ', error);
     res.status(500).json({ error: "Adding new user" });
   }
 });
 
 
-dashboardController.patch('edit/:id', async (req, res) => {
+dashboardController.patch('/update/:id', async (req, res) => {
+  console.log(req.body,req.params)
 	try {
 		const {id} = req.params;
 		const user = await AddressBook.findOneAndUpdate({_id: id},req.body)
@@ -53,7 +55,7 @@ dashboardController.patch('edit/:id', async (req, res) => {
 })
 
 
-dashboardController.delete('delete/:id', async (req, res)=>{
+dashboardController.delete('/delete/:id', async (req, res)=>{
 
 	try {
 		const {id}= req.params;

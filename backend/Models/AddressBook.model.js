@@ -4,9 +4,9 @@ const addressBookSchema = new mongoose.Schema({
   fullname: String,
   email: String,
   dob: String,
-  number:Number,
+  number: Number,
   website: String,
-  group: Number
+  group: String
 });
 
 const AddressBook = mongoose.model("adbook", addressBookSchema);
