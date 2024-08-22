@@ -22,7 +22,7 @@ app.post("/signup", async (req, res) => {
   let { name, email, password, username, mobile } = req.body;
   let user = await UserModel.findOne({ email });
   if(user){
-    return res.send({status: false,message: "Email allready present."});
+    return res.send({status: false,message: "Email already present."});
   }
   console.log(req.body);
   bcrypt
